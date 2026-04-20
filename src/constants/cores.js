@@ -9,10 +9,10 @@ export const cores = {
   },
 
   azul: {
-    fundo:     '#5BB8D4',
-    titulo:    '#1A7A9A',
-    botao:     '#1A9BBF',
-    dot:       '#1A6E8A',
+    fundo:     '#0096C7',
+    titulo:    '#0096c7',
+    botao:     '#0096c7',
+    dot:       '#001b57',
   },
 
 
