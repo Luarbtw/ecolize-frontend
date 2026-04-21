@@ -122,9 +122,9 @@ const styles = StyleSheet.create({
   },
   sol: {
     position: 'absolute',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: width * 0.15,
+    height: width * 0.15,
+    borderRadius: width * 0.075,
     backgroundColor: '#F5A623',
     top: height * 0.05,
     alignSelf: 'center',
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   linha: {
     position: 'absolute',
     width: width * 0.65,
-    height: 4,
+    height: height * 0.005,
     bottom: height * 0.01,
     alignSelf: 'center',
     zIndex: 2,
@@ -166,25 +166,25 @@ const styles = StyleSheet.create({
   // Botão voltar
   botaoVoltar: {
     position: 'absolute',
-    top: 52,
-    left: 20,
+    top: height * 0.065,
+    left: width * 0.05,
     zIndex: 10,
   },
   voltarTexto: {
-    fontSize: 32,
-    lineHeight: 36,
+    fontSize: width * 0.08,
+    lineHeight: width * 0.09,
     color: cor.titulo,
   },
 
   // Botão pular
   botaoPular: {
     position: 'absolute',
-    top: 56,
-    right: 24,
+    top: height * 0.068,
+    right: width * 0.06,
     zIndex: 10,
   },
   pularTexto: {
-    fontSize: 15,
+    fontSize: width * 0.038,
     color: '#888',
     fontWeight: '500',
   },
@@ -192,20 +192,20 @@ const styles = StyleSheet.create({
   // Conteúdo
   conteudo: {
     flex: 1,
-    paddingHorizontal: 28,
-    paddingTop: 25,
+    paddingHorizontal: width * 0.07,
+    paddingTop: height * 0.03,
   },
   titulo: {
     fontFamily: 'Poppins_700Bold',
-    fontSize: 30,
-    lineHeight: 38,
+    fontSize: width * 0.075,
+    lineHeight: width * 0.095,
     color: cor.titulo,
-    marginBottom: 16,
+    marginBottom: height * 0.02,
   },
   descricao: {
-    fontSize: 15,
+    fontSize: width * 0.038,
     color: cores.textoEscuro,
-    lineHeight: 24,
+    lineHeight: width * 0.06,
   },
   destaque: {
     fontWeight: '700',
@@ -215,41 +215,41 @@ const styles = StyleSheet.create({
   // Dots
   dots: {
     position: 'absolute',
-    bottom: 48,
+    bottom: height * 0.06,
     left: 0,
     right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    gap: width * 0.02,
   },
   dot: {
-    width: 16,
-    height: 8,
-    borderRadius: 4,
+    width: width * 0.04,
+    height: height * 0.01,
+    borderRadius: width * 0.01,
     backgroundColor: cores.cinzaClaro,
   },
   dotAtivo: {
-    width: 32,
+    width: width * 0.08,
     backgroundColor: cor.dot,
   },
 
   // Botão próximo
   botaoProximo: {
     position: 'absolute',
-    bottom: 36,
-    right: 28,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    bottom: height * 0.045,
+    right: width * 0.07,
+    width: width * 0.13,
+    height: width * 0.13,
+    borderRadius: width * 0.065,
     backgroundColor: cor.botao,
     alignItems: 'center',
     justifyContent: 'center',
   },
   setaTexto: {
     color: cores.branco,
-    fontSize: 32,
-    lineHeight: 36,
-    marginTop: -2,
+    fontSize: width * 0.08,
+    lineHeight: width * 0.09,
+    marginTop: -width * 0.005,
   },
 })

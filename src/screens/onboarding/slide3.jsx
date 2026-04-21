@@ -1,22 +1,40 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native'
 import { cores } from '../../constants/cores'
 
-const { height } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 const cor = cores.amarelo
 
 export default function Slide3({ navigation }) {
   return (
     <View style={styles.container}>
 
-      {/* Ilustração */}
-      <View style={[styles.ilustracao, { backgroundColor: cor.fundo }]}>
-        {/* Descomente quando exportar do Figma:
+      {/* Área da ilustração */}
+      <View style={styles.ilustracaoContainer}>
+
+        {/* Blob amarelo */}
         <Image
-          source={require('../../../assets/images/slide3.png')}
-          style={styles.imagem}
+          source={require('../../../assets/images/onboarding/vector3.png')}
+          style={styles.blob}
           resizeMode="contain"
-        /> */}
-        <Text style={styles.emoji}>💰</Text>
+        />
+
+        {/* Globo — atrás da carteira */}
+        <Image
+          source={require('../../../assets/images/onboarding/mundo.png')}
+          style={styles.globo}
+          resizeMode="contain"
+        />
+
+        {/* Sol amarelo — canto direito */}
+        <View style={styles.sol} />
+
+        {/* Carteira com pessoas */}
+        <Image
+          source={require('../../../assets/images/onboarding/carteira.png')}
+          style={styles.carteira}
+          resizeMode="contain"
+        />
+
       </View>
 
       {/* Botão Voltar */}
@@ -24,20 +42,20 @@ export default function Slide3({ navigation }) {
         style={styles.botaoVoltar}
         onPress={() => navigation.goBack()}
       >
-        <Text style={[styles.voltarTexto, { color: cor.titulo }]}>‹</Text>
+        <Text style={styles.voltarTexto}>‹</Text>
       </TouchableOpacity>
 
       {/* Botão Pular */}
       <TouchableOpacity
         style={styles.botaoPular}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('Slide1')}
       >
         <Text style={styles.pularTexto}>Pular</Text>
       </TouchableOpacity>
 
-      {/* Conteúdo */}
+      {/* Conteúdo textual */}
       <View style={styles.conteudo}>
-        <Text style={[styles.titulo, { color: cor.titulo }]}>
+        <Text style={styles.titulo}>
           Sua economia{'\n'}protege o futuro.
         </Text>
 
@@ -46,23 +64,22 @@ export default function Slide3({ navigation }) {
           hidrelétricas e biomas. Pequenas ações contribuem diretamente para os
           Objetivos de Desenvolvimento Sustentável.
         </Text>
-
-        {/* Rodapé */}
-        <View style={styles.rodape}>
-          <View style={styles.dots}>
-            <View style={[styles.dot, { width: 8, backgroundColor: cores.cinzaClaro }]} />
-            <View style={[styles.dot, { width: 8, backgroundColor: cores.cinzaClaro }]} />
-            <View style={[styles.dot, { width: 24, backgroundColor: cor.dot }]} />
-          </View>
-
-          <TouchableOpacity
-            style={[styles.botaoProximo, { backgroundColor: cor.botao }]}
-            onPress={() => navigation.navigate('Home')}
-          >
-            <Text style={styles.setaTexto}>›</Text>
-          </TouchableOpacity>
-        </View>
       </View>
+
+      {/* Dots centralizados */}
+      <View style={styles.dots}>
+        <View style={styles.dot} />
+        <View style={styles.dot} />
+        <View style={[styles.dot, styles.dotAtivo]} />
+      </View>
+
+      {/* Botão próximo */}
+      <TouchableOpacity
+        style={styles.botaoProximo}
+        onPress={() => navigation.navigate('Slide1')}
+      >
+        <Text style={styles.setaTexto}>›</Text>
+      </TouchableOpacity>
 
     </View>
   )
@@ -73,88 +90,132 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: cores.fundoClaro,
   },
-  ilustracao: {
+
+  // Ilustração
+  ilustracaoContainer: {
     width: '100%',
-    height: height * 0.50,
-    borderBottomLeftRadius: 60,
-    borderBottomRightRadius: 60,
+    height: height * 0.58,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
   },
-  imagem: {
-    width: '100%',
-    height: '100%',
+  blob: {
+    position: 'absolute',
+    width: width * 1.0,
+    height: height * 0.52,
+    top: height * 0.055,
+    alignSelf: 'center',
   },
-  emoji: {
-    fontSize: 100,
+  globo: {
+    position: 'absolute',
+    width: width * 1.1,
+    height: width * 1.1,
+    top: height * 0.06,
+    alignSelf: 'center',
+    zIndex: 1,
   },
+  sol: {
+    position: 'absolute',
+    width: width * 0.18,
+    height: width * 0.18,
+    borderRadius: width * 1,
+    backgroundColor: '#F5A623',
+    top: height * 0.27,
+    left: width * 0.89,
+    zIndex: 1,
+  },
+  carteira: {
+    position: 'absolute',
+    width: width * 0.9,
+    height: width * 0.75,
+    top: height * 0.23,
+    left: width * 0.08,
+    alignSelf: 'center',
+    zIndex: 2,
+  },
+
+  // Botão voltar
   botaoVoltar: {
     position: 'absolute',
-    top: 52,
-    left: 20,
+    top: height * 0.065,
+    left: width * 0.05,
     zIndex: 10,
   },
   voltarTexto: {
-    fontSize: 32,
-    lineHeight: 36,
-    fontWeight: '300',
+    fontSize: width * 0.08,
+    lineHeight: width * 0.09,
+    color: cor.titulo,
   },
+
+  // Botão pular
   botaoPular: {
     position: 'absolute',
-    top: 56,
-    right: 24,
+    top: height * 0.068,
+    right: width * 0.06,
     zIndex: 10,
   },
   pularTexto: {
-    fontSize: 15,
-    color: cores.cinzaClaro,
+    fontSize: width * 0.038,
+    color: '#888',
     fontWeight: '500',
   },
+
+  // Conteúdo
   conteudo: {
     flex: 1,
-    paddingHorizontal: 28,
-    paddingTop: 28,
-    paddingBottom: 20,
+    paddingHorizontal: width * 0.07,
+    paddingTop: height * 0.03,
   },
   titulo: {
-    fontSize: 28,
-    fontWeight: '700',
-    lineHeight: 36,
-    marginBottom: 16,
+    fontFamily: 'Poppins_700Bold',
+    fontSize: width * 0.075,
+    lineHeight: width * 0.095,
+    color: cor.titulo,
+    marginBottom: height * 0.02,
   },
   descricao: {
-    fontSize: 15,
+    fontSize: width * 0.038,
     color: cores.textoEscuro,
-    lineHeight: 24,
-    flex: 1,
+    lineHeight: width * 0.06,
   },
-  rodape: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 16,
-  },
+
+  // Dots
   dots: {
+    position: 'absolute',
+    bottom: height * 0.055,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    gap: width * 0.02,
   },
   dot: {
-    height: 8,
-    borderRadius: 4,
+    width: width * 0.04,
+    height: height * 0.01,
+    borderRadius: width * 0.01,
+    backgroundColor: cores.cinzaClaro,
   },
+  dotAtivo: {
+    width: width * 0.08,
+    backgroundColor: cor.dot,
+  },
+
+  // Botão próximo
   botaoProximo: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    position: 'absolute',
+    bottom: height * 0.06,
+    right: width * 0.07,
+    width: width * 0.13,
+    height: width * 0.13,
+    borderRadius: width * 0.065,
+    backgroundColor: cor.botao,
     alignItems: 'center',
     justifyContent: 'center',
   },
   setaTexto: {
     color: cores.branco,
-    fontSize: 32,
-    lineHeight: 36,
-    marginTop: -2,
+    fontSize: width * 0.08,
+    lineHeight: width * 0.09,
+    marginTop: -width * 0.005,
   },
 })

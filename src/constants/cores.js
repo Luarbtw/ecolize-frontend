@@ -18,7 +18,7 @@ export const cores = {
 
   amarelo: {
     fundo:     '#F5C842',
-    titulo:    '#D4820A',
+    titulo:    '#F59E0B',
     botao:     '#F5A623',
     dot:       '#C47A0A',
   },
