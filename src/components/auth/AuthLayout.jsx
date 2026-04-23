@@ -23,6 +23,7 @@ export default function AuthLayout({
   footerText,
   footerLinkText,
   onFooterPress,
+  verticalOffset = 0,
 }) {
   return (
     <SafeAreaContextView style={styles.safeArea}>
@@ -33,11 +34,16 @@ export default function AuthLayout({
         <Image source={topBlobImage} style={styles.topBlob} resizeMode="contain" />
         <Image source={bottomBlobImage} style={styles.bottomBlob} resizeMode="contain" />
 
-        <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Pressable
+          style={[styles.backButton, verticalOffset !== 0 && { transform: [{ translateY: verticalOffset }] }]}
+          onPress={() => navigation.goBack()}
+        >
           <Image source={backArrowImage} style={styles.backArrow} resizeMode="contain" />
         </Pressable>
 
-        <View style={styles.content}>
+        <View
+          style={[styles.content, verticalOffset !== 0 && { transform: [{ translateY: verticalOffset }] }]}
+        >
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.subtitle}>{subtitle}</Text>
@@ -77,7 +83,7 @@ const styles = StyleSheet.create({
   },
   topBlob: {
     position: 'absolute',
-    top: -22,
+    top: -40,
     right: -18,
     width: 176,
     height: 206,
@@ -86,7 +92,7 @@ const styles = StyleSheet.create({
   bottomBlob: {
     position: 'absolute',
     left: -26,
-    bottom: -36,
+    bottom: -50,
     width: 208,
     height: 226,
   },

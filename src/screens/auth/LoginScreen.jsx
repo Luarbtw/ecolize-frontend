@@ -13,6 +13,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <AuthLayout
       navigation={navigation}
+      verticalOffset={-18}
       title={`Entre na\nsua conta`}
       subtitle="Acesse a Ecolize e acompanhe seus gastos com praticidade."
       buttonText="Entrar"

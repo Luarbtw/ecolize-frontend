@@ -15,6 +15,7 @@ export default function RegisterScreen({ navigation }) {
   return (
     <AuthLayout
       navigation={navigation}
+      verticalOffset={-18}
       title={`Crie sua\nconta`}
       subtitle="Comece a economizar de forma inteligente com a Ecolize."
       buttonText="Criar conta"
