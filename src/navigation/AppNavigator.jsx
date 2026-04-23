@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import LoginScreen from '../screens/auth/LoginScreen'
 import RegisterScreen from '../screens/auth/RegisterScreen'
+import EnergyDetailsScreen from '../screens/home/EnergyDetailsScreen'
 import HomeScreen from '../screens/home/HomeScreen'
 import WaterDetailsScreen from '../screens/home/WaterDetailsScreen'
 import Slide1 from '../screens/onboarding/Slide1'
@@ -20,6 +21,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="WaterDetails" component={WaterDetailsScreen} />
+      <Stack.Screen name="EnergyDetails" component={EnergyDetailsScreen} />
     </Stack.Navigator>
   )
 }

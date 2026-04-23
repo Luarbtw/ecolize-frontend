@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
   },
   blob: {
     position: 'absolute',
-    width: width * 1,
-    height: width * 1,
+    width: width * 1.03,
+    height: width * 1.03,
     top: height * 0.1,
     alignSelf: 'center',
     resizeMode: 'contain',

@@ -15,6 +15,7 @@ const rankingTrophy = require('../../../assets/images/home/rankingTrophy.png')
 const consumptionCards = [
   {
     title: 'Consumo de Água',
+    routeName: 'WaterDetails',
     value: '12.4 m³',
     icon: waterIcon,
     iconTint: '#E0F2FE',
@@ -24,6 +25,7 @@ const consumptionCards = [
   },
   {
     title: 'Consumo de Luz',
+    routeName: 'EnergyDetails',
     value: '165 kWh',
     icon: energyIcon,
     iconTint: '#FEF3C7',
@@ -142,7 +144,7 @@ export default function HomeScreen({ navigation }) {
                 key={card.title}
                 {...card}
                 width={metricCardWidth}
-                onPress={card.title === 'Consumo de Água' ? () => navigation.navigate('WaterDetails') : undefined}
+                onPress={() => navigation.navigate(card.routeName)}
               />
             ))}
           </View>
