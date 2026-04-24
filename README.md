@@ -1,6 +1,6 @@
 # Ecolize Frontend
 
-Frontend mobile da Ecolize, desenvolvido com Expo e React Native.
+Frontend do projeto Ecolize, desenvolvido com Expo e React Native.
 
 O projeto foi estruturado para funcionar hoje com dados mockados centralizados, mas já preparado para integração com backend real por meio de uma camada de `services`, `context` e `hooks`.
 
@@ -8,9 +8,6 @@ O projeto foi estruturado para funcionar hoje com dados mockados centralizados, 
 
 - Expo
 - React Native
-- React Navigation
-- `react-native-safe-area-context`
-- Google Fonts (`Poppins`)
 
 ## Como rodar
 
