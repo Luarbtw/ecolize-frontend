@@ -27,7 +27,6 @@ export default function HomeBottomNav({
       <BottomNavItem icon={goalsIcon} active={activeKey === 'goals'} onPress={onGoalsPress} />
       <BottomNavItem icon={trophyIcon} active={activeKey === 'trophy'} onPress={onTrophyPress} />
       <BottomNavItem icon={profileIcon} active={activeKey === 'profile'} onPress={onProfilePress} />
-      <View style={styles.homeIndicator} />
     </View>
   )
 }
@@ -66,14 +65,5 @@ const styles = StyleSheet.create({
     width: 54,
     height: 7,
     backgroundColor: '#1CA1CE',
-  },
-  homeIndicator: {
-    position: 'absolute',
-    bottom: 8,
-    alignSelf: 'center',
-    width: 134,
-    height: 5,
-    borderRadius: 100,
-    backgroundColor: '#000000',
   },
 })

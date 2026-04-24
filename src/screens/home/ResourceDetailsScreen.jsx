@@ -110,11 +110,14 @@ export default function ResourceDetailsScreen({
           </ElevatedCard>
         </ScrollView>
 
-        <View style={styles.bottomDock}>
+        <Pressable
+          style={styles.bottomDock}
+          onPress={() => navigation.navigate('Home', { screen: 'Goals' })}
+        >
           <Image source={addButtonIcon} style={styles.addButton} resizeMode="contain" />
           <Text style={styles.addLabel}>Adicionar meta</Text>
           <View style={styles.homeIndicator} />
-        </View>
+        </Pressable>
       </View>
     </SafeAreaView>
   )

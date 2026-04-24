@@ -2,7 +2,6 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensio
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import ElevatedCard from '../../components/home/ElevatedCard'
-import HomeBottomNav from '../../components/home/HomeBottomNav'
 
 const avatarImage = require('../../../assets/images/home/avatar.png')
 const notificationIcon = require('../../../assets/images/home/notification.png')
@@ -102,7 +101,10 @@ export default function HomeScreen({ navigation }) {
         >
           <View style={styles.headerCard}>
             <View style={styles.headerTopRow}>
-              <View style={styles.profileRow}>
+              <Pressable
+                style={styles.profileRow}
+                onPress={() => navigation.navigate('Profile')}
+              >
                 <View style={styles.avatarWrap}>
                   <Image source={avatarImage} style={styles.avatarImage} resizeMode="cover" />
                   <View style={styles.avatarOutline} />
@@ -112,7 +114,7 @@ export default function HomeScreen({ navigation }) {
                   <Text style={styles.greeting}>Bom dia,</Text>
                   <Text style={styles.username}>Mariana</Text>
                 </View>
-              </View>
+              </Pressable>
 
               <Pressable style={styles.notificationButton}>
                 <Image source={notificationIcon} style={styles.notificationIcon} resizeMode="contain" />
@@ -151,7 +153,7 @@ export default function HomeScreen({ navigation }) {
 
           <Text style={[styles.sectionTitle, styles.rankingTitle]}>Ranking da vizinhança</Text>
 
-          <View style={styles.rankingSection}>
+          <Pressable style={styles.rankingSection} onPress={() => navigation.navigate('Ranking')}>
             <Image source={rankingBadge} style={styles.rankingBadge} resizeMode="contain" />
             <View style={styles.rankingTrophyWrap}>
               <Image source={rankingTrophy} style={styles.rankingTrophy} resizeMode="contain" />
@@ -166,10 +168,9 @@ export default function HomeScreen({ navigation }) {
                 />
               ))}
             </ElevatedCard>
-          </View>
+          </Pressable>
         </ScrollView>
 
-        <HomeBottomNav activeKey="home" />
       </View>
     </SafeAreaView>
   )
