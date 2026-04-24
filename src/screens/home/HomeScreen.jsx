@@ -122,7 +122,7 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             <View style={styles.headerBottomRow}>
-              <Text style={styles.sectionTitle}>Resumo de março</Text>
+              <Text style={styles.sectionTitle}>Resumo de maio</Text>
               <View style={styles.activeGoalPill}>
                 <Text style={styles.activeGoalText}>Meta ativa</Text>
               </View>
