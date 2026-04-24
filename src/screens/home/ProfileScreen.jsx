@@ -1,28 +1,17 @@
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import ScreenState from '../../components/common/ScreenState'
 import ElevatedCard from '../../components/home/ElevatedCard'
+import { useAuth } from '../../context/AuthContext'
+import useAsyncData from '../../hooks/useAsyncData'
+import { getProfileOverview } from '../../services/profileService'
 
 const avatarImage = require('../../../assets/images/home/avatar.png')
 const avatarOutline = require('../../../assets/images/home/avatarOutline.png')
 const backArrowIcon = require('../../../assets/images/home/backArrowSmall.png')
 const settingsIcon = require('../../../assets/images/home/settings.png')
 const chartIcon = require('../../../assets/images/home/barChart.png')
-
-const stats = [
-  { value: '87', label: 'DIAS' },
-  { value: '#4', label: 'RANK' },
-  { value: '12', label: 'TROFÉUS' },
-]
-
-const chartGroups = [
-  { month: 'Jan', water: 154, energy: 134 },
-  { month: 'Fev', water: 134, energy: 134 },
-  { month: 'Mar', water: 154, energy: 182 },
-]
-
-const leftScale = ['12000', '9000', '6000', '6000', '0']
-const rightScale = ['220', '165', '110', '55', '0']
 
 function StatItem({ value, label }) {
   return (
@@ -33,7 +22,7 @@ function StatItem({ value, label }) {
   )
 }
 
-function HistoryChart() {
+function HistoryChart({ chartGroups, leftScale, rightScale }) {
   return (
     <ElevatedCard style={styles.historyCard}>
       <View style={styles.historyHeader}>
@@ -90,6 +79,17 @@ function HistoryChart() {
 }
 
 export default function ProfileScreen({ navigation }) {
+  const { logout } = useAuth()
+  const { data, loading, error, reload } = useAsyncData(getProfileOverview, [])
+
+  async function handleLogout() {
+    await logout()
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    })
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -115,26 +115,45 @@ export default function ProfileScreen({ navigation }) {
               <Image source={avatarOutline} style={styles.avatarOutline} resizeMode="contain" />
             </View>
 
-            <Text style={styles.profileName}>Mariana Reis</Text>
+            <Text style={styles.profileName}>{data?.user?.fullName || 'Usuário'}</Text>
 
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>Guardião da natureza</Text>
+              <Text style={styles.badgeText}>{data?.user?.badgeTitle || 'Guardião da natureza'}</Text>
             </View>
           </View>
 
           <ElevatedCard style={styles.statsCard}>
-            {stats.map((item) => (
+            {(data?.stats || []).map((item) => (
               <StatItem key={item.label} value={item.value} label={item.label} />
             ))}
           </ElevatedCard>
 
-          <HistoryChart />
+          {loading ? (
+            <ScreenState compact title="Carregando perfil" description="Buscando suas informações." />
+          ) : null}
 
-          <Pressable style={styles.logoutButton}>
+          {error ? (
+            <ScreenState
+              compact
+              title="Não foi possível carregar o perfil"
+              description="Tente novamente em instantes."
+              actionLabel="Recarregar"
+              onActionPress={reload}
+            />
+          ) : null}
+
+          {data?.history ? (
+            <HistoryChart
+              chartGroups={data.history.chartGroups}
+              leftScale={data.history.leftScale}
+              rightScale={data.history.rightScale}
+            />
+          ) : null}
+
+          <Pressable style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>Sair da conta</Text>
           </Pressable>
         </ScrollView>
-
       </View>
     </SafeAreaView>
   )

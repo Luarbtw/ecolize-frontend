@@ -65,6 +65,9 @@ export default function AccountSettingsFormScreen({
   fields,
   buttonText,
   onSubmit,
+  submitDisabled = false,
+  feedbackMessage,
+  feedbackTone = 'neutral',
 }) {
   const [values, setValues] = useState(() =>
     Object.fromEntries(fields.map((field) => [field.key, field.initialValue ?? '']))
@@ -108,9 +111,25 @@ export default function AccountSettingsFormScreen({
             ))}
           </View>
 
-          <Pressable style={styles.submitButton} onPress={() => onSubmit?.(values)}>
+          <Pressable
+            style={[styles.submitButton, submitDisabled && styles.submitButtonDisabled]}
+            onPress={() => onSubmit?.(values)}
+            disabled={submitDisabled}
+          >
             <Text style={styles.submitButtonText}>{buttonText}</Text>
           </Pressable>
+
+          {feedbackMessage ? (
+            <Text
+              style={[
+                styles.feedbackText,
+                feedbackTone === 'error' && styles.feedbackTextError,
+                feedbackTone === 'success' && styles.feedbackTextSuccess,
+              ]}
+            >
+              {feedbackMessage}
+            </Text>
+          ) : null}
         </ScrollView>
       </View>
     </ContextSafeAreaView>
@@ -209,10 +228,28 @@ const styles = StyleSheet.create({
     shadowRadius: 5.1,
     elevation: 4,
   },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
   submitButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     lineHeight: 18,
     fontFamily: 'Poppins_700Bold',
+  },
+  feedbackText: {
+    marginTop: 12,
+    marginHorizontal: 29,
+    color: '#64748B',
+    fontSize: 14,
+    lineHeight: 18,
+    fontFamily: 'Poppins_500Medium',
+    textAlign: 'center',
+  },
+  feedbackTextError: {
+    color: '#B42318',
+  },
+  feedbackTextSuccess: {
+    color: '#10B981',
   },
 })

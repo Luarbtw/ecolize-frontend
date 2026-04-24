@@ -1,31 +1,38 @@
+import ScreenState from '../../components/common/ScreenState'
+import useAsyncData from '../../hooks/useAsyncData'
+import { getResourceDetails } from '../../services/resourceService'
 import ResourceDetailsScreen from './ResourceDetailsScreen'
 
 const waterIcon = require('../../../assets/images/home/water.png')
 
-const waterWeekBars = [
-  { label: 'Seg', height: 123, active: false },
-  { label: 'Ter', height: 146, active: false },
-  { label: 'Quar', height: 123, active: false },
-  { label: 'Qui', height: 108, active: false },
-  { label: 'Sex', height: 138, active: false },
-  { label: 'Sab', height: 174, active: true },
-  { label: 'Dom', height: 153, active: false },
-]
-
 export default function WaterDetailsScreen({ navigation }) {
+  const { data, loading, error, reload } = useAsyncData(() => getResourceDetails('water'), [])
+
+  if (loading) {
+    return <ScreenState title="Carregando consumo de água" description="Buscando seus dados." />
+  }
+
+  if (error || !data) {
+    return (
+      <ScreenState
+        title="Não foi possível carregar o consumo de água"
+        description="Tente novamente em instantes."
+        actionLabel="Recarregar"
+        onActionPress={reload}
+      />
+    )
+  }
+
   return (
     <ResourceDetailsScreen
       navigation={navigation}
-      title="Controle de Água"
+      title={data.title}
       icon={waterIcon}
-      currentValue="12.4m³"
-      comparisonText="12% melhor que o mês passado"
-      tipText="O pico no Sábado indica provável uso da máquina de lavar. Tente acumular mais roupas para uma única lavagem!"
-      colors={{
-        primary: '#0096C7',
-        soft: '#E0F2FE',
-      }}
-      bars={waterWeekBars}
+      currentValue={data.currentValue}
+      comparisonText={data.comparisonText}
+      tipText={data.tipText}
+      colors={data.colors}
+      bars={data.bars}
     />
   )
 }

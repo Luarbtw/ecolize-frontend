@@ -1,7 +1,11 @@
 import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import ScreenState from '../../components/common/ScreenState'
 import ElevatedCard from '../../components/home/ElevatedCard'
+import { useAuth } from '../../context/AuthContext'
+import useAsyncData from '../../hooks/useAsyncData'
+import { getHomeDashboard } from '../../services/dashboardService'
 
 const avatarImage = require('../../../assets/images/home/avatar.png')
 const notificationIcon = require('../../../assets/images/home/notification.png')
@@ -11,33 +15,10 @@ const energyIcon = require('../../../assets/images/home/energy.png')
 const rankingBadge = require('../../../assets/images/home/rankingBadge.png')
 const rankingTrophy = require('../../../assets/images/home/rankingTrophy.png')
 
-const consumptionCards = [
-  {
-    title: 'Consumo de Água',
-    routeName: 'WaterDetails',
-    value: '12.4 m³',
-    icon: waterIcon,
-    iconTint: '#E0F2FE',
-    valueColor: '#0096C7',
-    progressColor: '#0096C7',
-    progressBackground: '#D7EAF7',
-  },
-  {
-    title: 'Consumo de Luz',
-    routeName: 'EnergyDetails',
-    value: '165 kWh',
-    icon: energyIcon,
-    iconTint: '#FEF3C7',
-    valueColor: '#FFB703',
-    progressColor: '#FFB703',
-    progressBackground: '#FDF0C3',
-  },
-]
-
-const ranking = [
-  { position: '1', name: 'Gustavo Paes', house: 'Casa 07', delta: '-27%' },
-  { position: '2', name: 'César Sobreira', house: 'Casa 13', delta: '-20%' },
-]
+const resourceIcons = {
+  water: waterIcon,
+  energy: energyIcon,
+}
 
 function ConsumptionCard({
   title,
@@ -87,6 +68,8 @@ function RankingRow({ position, name, house, delta, isLast }) {
 }
 
 export default function HomeScreen({ navigation }) {
+  const { user } = useAuth()
+  const { data, loading, error, reload } = useAsyncData(getHomeDashboard, [])
   const { width } = useWindowDimensions()
   const horizontalMargin = 45
   const metricsGap = 16
@@ -101,10 +84,7 @@ export default function HomeScreen({ navigation }) {
         >
           <View style={styles.headerCard}>
             <View style={styles.headerTopRow}>
-              <Pressable
-                style={styles.profileRow}
-                onPress={() => navigation.navigate('Profile')}
-              >
+              <Pressable style={styles.profileRow} onPress={() => navigation.navigate('Profile')}>
                 <View style={styles.avatarWrap}>
                   <Image source={avatarImage} style={styles.avatarImage} resizeMode="cover" />
                   <View style={styles.avatarOutline} />
@@ -112,7 +92,7 @@ export default function HomeScreen({ navigation }) {
 
                 <View>
                   <Text style={styles.greeting}>Bom dia,</Text>
-                  <Text style={styles.username}>Mariana</Text>
+                  <Text style={styles.username}>{user?.firstName || 'Usuário'}</Text>
                 </View>
               </Pressable>
 
@@ -122,9 +102,11 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             <View style={styles.headerBottomRow}>
-              <Text style={styles.sectionTitle}>Resumo de maio</Text>
+              <Text style={styles.sectionTitle}>
+                {`Resumo de ${data?.monthLabel || 'maio'}`}
+              </Text>
               <View style={styles.activeGoalPill}>
-                <Text style={styles.activeGoalText}>Meta ativa</Text>
+                <Text style={styles.activeGoalText}>{data?.activeGoalLabel || 'Meta ativa'}</Text>
               </View>
             </View>
           </View>
@@ -132,7 +114,7 @@ export default function HomeScreen({ navigation }) {
           <ElevatedCard style={styles.savingsCard}>
             <View>
               <Text style={styles.savingsLabel}>Economia estimada</Text>
-              <Text style={styles.savingsValue}>R$ 76,60</Text>
+              <Text style={styles.savingsValue}>{data?.estimatedSavings || 'R$ 0,00'}</Text>
             </View>
 
             <View style={styles.savingsIconWrap}>
@@ -141,15 +123,30 @@ export default function HomeScreen({ navigation }) {
           </ElevatedCard>
 
           <View style={styles.metricsRow}>
-            {consumptionCards.map((card) => (
+            {(data?.consumptionCards || []).map((card) => (
               <ConsumptionCard
                 key={card.title}
                 {...card}
+                icon={resourceIcons[card.resourceKey]}
                 width={metricCardWidth}
                 onPress={() => navigation.navigate(card.routeName)}
               />
             ))}
           </View>
+
+          {loading ? (
+            <ScreenState compact title="Carregando dashboard" description="Buscando seus dados." />
+          ) : null}
+
+          {error ? (
+            <ScreenState
+              compact
+              title="Não foi possível carregar a home"
+              description="Tente novamente em instantes."
+              actionLabel="Recarregar"
+              onActionPress={reload}
+            />
+          ) : null}
 
           <Text style={[styles.sectionTitle, styles.rankingTitle]}>Ranking da vizinhança</Text>
 
@@ -160,17 +157,16 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             <ElevatedCard style={styles.rankingCard}>
-              {ranking.map((item, index) => (
+              {(data?.neighborhoodRanking || []).map((item, index) => (
                 <RankingRow
                   key={item.position}
                   {...item}
-                  isLast={index === ranking.length - 1}
+                  isLast={index === data.neighborhoodRanking.length - 1}
                 />
               ))}
             </ElevatedCard>
           </Pressable>
         </ScrollView>
-
       </View>
     </SafeAreaView>
   )

@@ -1,42 +1,18 @@
 import { useMemo, useState } from 'react'
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 
+import ScreenState from '../../components/common/ScreenState'
 import ElevatedCard from '../../components/home/ElevatedCard'
 import HomeFeatureScreen from '../../components/home/HomeFeatureScreen'
 import ScreenHero from '../../components/home/ScreenHero'
+import useAsyncData from '../../hooks/useAsyncData'
+import { getRanking } from '../../services/rankingService'
 
 const chartIcon = require('../../../assets/images/home/barChart.png')
 const rankingCrownIcon = require('../../../assets/images/home/rankingCrown.png')
 const rankingGroupIcon = require('../../../assets/images/home/rankingGroup.png')
 const waterIcon = require('../../../assets/images/home/water.png')
 const energyIcon = require('../../../assets/images/home/energy.png')
-
-const RANKING_DATA = {
-  water: {
-    summary: {
-      position: '#4',
-      participants: '1.780',
-    },
-    items: [
-      { name: 'Gustavo Pães', savings: '27% de economia', place: 1 },
-      { name: 'César Sobreira', savings: '20% de economia', place: 2 },
-      { name: 'Arthur Renato', savings: '17% de economia', place: 3 },
-      { name: 'Julia Reis', savings: '5% de economia', place: 4 },
-    ],
-  },
-  energy: {
-    summary: {
-      position: '#7',
-      participants: '1.780',
-    },
-    items: [
-      { name: 'Marina Duarte', savings: '24% de economia', place: 1 },
-      { name: 'Gustavo Pães', savings: '21% de economia', place: 2 },
-      { name: 'Lívia Souza', savings: '18% de economia', place: 3 },
-      { name: 'César Sobreira', savings: '9% de economia', place: 4 },
-    ],
-  },
-}
 
 const FILTERS = {
   water: {
@@ -135,8 +111,16 @@ function RankingRow({ item }) {
 
 export default function RankingScreen({ navigation }) {
   const [activeFilter, setActiveFilter] = useState('water')
+  const { data, loading, error, reload } = useAsyncData(() => getRanking(activeFilter), [activeFilter])
 
-  const activeData = useMemo(() => RANKING_DATA[activeFilter], [activeFilter])
+  const activeData = useMemo(
+    () =>
+      data || {
+        summary: { position: '--', participants: '--' },
+        items: [],
+      },
+    [data]
+  )
 
   return (
     <HomeFeatureScreen
@@ -178,6 +162,20 @@ export default function RankingScreen({ navigation }) {
           />
         ))}
       </View>
+
+      {loading ? (
+        <ScreenState compact title="Carregando ranking" description="Buscando seu comparativo." />
+      ) : null}
+
+      {error ? (
+        <ScreenState
+          compact
+          title="Não foi possível carregar o ranking"
+          description="Tente novamente em instantes."
+          actionLabel="Recarregar"
+          onActionPress={reload}
+        />
+      ) : null}
 
       <View style={styles.rankingList}>
         {activeData.items.map((item) => (

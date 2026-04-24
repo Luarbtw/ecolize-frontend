@@ -1,26 +1,17 @@
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import ScreenState from '../../components/common/ScreenState'
+import { useAuth } from '../../context/AuthContext'
+import useAsyncData from '../../hooks/useAsyncData'
+import { getSettingsData } from '../../services/settingsService'
+
 const avatarImage = require('../../../assets/images/home/avatar.png')
 const avatarOutline = require('../../../assets/images/home/avatarOutline.png')
 const backArrowIcon = require('../../../assets/images/home/backArrowSmall.png')
 const chevronRightIcon = require('../../../assets/images/home/chevronRight.png')
 const arrowOutwardIcon = require('../../../assets/images/home/arrowOutward.png')
 const logoutIcon = require('../../../assets/images/home/logoutIcon.png')
-
-const accountItems = [
-  { label: 'Informações pessoais', type: 'internal', routeName: 'PersonalInfo' },
-  { label: 'E-mail', value: 'reisjulis398@gmail.com', type: 'internal', routeName: 'EmailSettings' },
-  { label: 'Senha', value: 'Mudar senha', type: 'internal', routeName: 'ChangePassword' },
-  { label: 'Notificações', type: 'internal' },
-]
-
-const supportItems = [
-  { label: 'Perguntas Frequentes', type: 'internal', routeName: 'Faq' },
-  { label: 'Termos de Serviço', type: 'internal', routeName: 'TermsOfUse' },
-  { label: 'Política de privacidade', type: 'internal', routeName: 'PrivacyPolicy' },
-  { label: 'Sair', type: 'logout' },
-]
 
 function SettingsRow({ label, value, type, isLast, onPress }) {
   const trailingIcon =
@@ -61,6 +52,9 @@ function SettingsSection({ title, items, onItemPress }) {
 }
 
 export default function SettingsScreen({ navigation }) {
+  const { logout } = useAuth()
+  const { data, loading, error, reload } = useAsyncData(getSettingsData, [])
+
   function handleItemPress(item) {
     if (item.routeName) {
       navigation.navigate(item.routeName)
@@ -68,10 +62,12 @@ export default function SettingsScreen({ navigation }) {
     }
 
     if (item.type === 'logout') {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      })
+      logout().then(() =>
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        })
+      )
     }
   }
 
@@ -97,23 +93,41 @@ export default function SettingsScreen({ navigation }) {
               </View>
 
               <View style={styles.profileTextBlock}>
-                <Text style={styles.profileName}>Mariana Reis</Text>
-                <Text style={styles.profileEmail}>reisjulis398@gmail.com</Text>
+                <Text style={styles.profileName}>{data?.user?.fullName || 'Usuário'}</Text>
+                <Text style={styles.profileEmail}>{data?.user?.email || '-'}</Text>
               </View>
             </View>
           </View>
 
-          <SettingsSection
-            title="Gerenciamento de conta"
-            items={accountItems}
-            onItemPress={handleItemPress}
-          />
+          {loading ? (
+            <ScreenState compact title="Carregando configurações" description="Buscando seus dados." />
+          ) : null}
 
-          <SettingsSection
-            title="Suporte"
-            items={supportItems}
-            onItemPress={handleItemPress}
-          />
+          {error ? (
+            <ScreenState
+              compact
+              title="Não foi possível carregar as configurações"
+              description="Tente novamente em instantes."
+              actionLabel="Recarregar"
+              onActionPress={reload}
+            />
+          ) : null}
+
+          {data ? (
+            <>
+              <SettingsSection
+                title="Gerenciamento de conta"
+                items={data.accountItems}
+                onItemPress={handleItemPress}
+              />
+
+              <SettingsSection
+                title="Suporte"
+                items={data.supportItems}
+                onItemPress={handleItemPress}
+              />
+            </>
+          ) : null}
         </ScrollView>
       </View>
     </SafeAreaView>

@@ -1,16 +1,12 @@
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import ScreenState from '../../components/common/ScreenState'
+import useAsyncData from '../../hooks/useAsyncData'
+import { getPersonalInfoItems } from '../../services/profileService'
+
 const backArrowIcon = require('../../../assets/images/home/backArrowSmall.png')
 const chevronRightIcon = require('../../../assets/images/home/chevronRight.png')
-
-const personalInfoItems = [
-  { label: 'Foto de perfil' },
-  { label: 'Nome', value: 'Mariana Reis' },
-  { label: 'Data de nascimento', value: '08/06/2004' },
-  { label: 'Gênero', value: 'Feminino' },
-  { label: 'País/estado', value: 'Brasil, Amazonas' },
-]
 
 function InfoRow({ label, value, isLast, onPress }) {
   return (
@@ -26,6 +22,8 @@ function InfoRow({ label, value, isLast, onPress }) {
 }
 
 export default function PersonalInfoScreen({ navigation }) {
+  const { data, loading, error, reload } = useAsyncData(getPersonalInfoItems, [])
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -43,11 +41,25 @@ export default function PersonalInfoScreen({ navigation }) {
           <View style={styles.listWrap}>
             <View style={styles.sectionDivider} />
 
-            {personalInfoItems.map((item, index) => (
+            {loading ? (
+              <ScreenState compact title="Carregando dados" description="Buscando informações pessoais." />
+            ) : null}
+
+            {error ? (
+              <ScreenState
+                compact
+                title="Não foi possível carregar as informações"
+                description="Tente novamente em instantes."
+                actionLabel="Recarregar"
+                onActionPress={reload}
+              />
+            ) : null}
+
+            {(data || []).map((item, index) => (
               <InfoRow
                 key={item.label}
                 {...item}
-                isLast={index === personalInfoItems.length - 1}
+                isLast={index === data.length - 1}
               />
             ))}
           </View>

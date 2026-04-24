@@ -24,6 +24,9 @@ export default function AuthLayout({
   footerLinkText,
   onFooterPress,
   verticalOffset = 0,
+  submitDisabled = false,
+  feedbackMessage,
+  feedbackTone = 'neutral',
 }) {
   return (
     <SafeAreaContextView style={styles.safeArea}>
@@ -52,9 +55,25 @@ export default function AuthLayout({
           <View style={styles.form}>{children}</View>
 
           <View style={styles.actions}>
-            <Pressable style={styles.primaryButton} onPress={onSubmit}>
+            <Pressable
+              style={[styles.primaryButton, submitDisabled && styles.primaryButtonDisabled]}
+              onPress={onSubmit}
+              disabled={submitDisabled}
+            >
               <Text style={styles.primaryButtonText}>{buttonText}</Text>
             </Pressable>
+
+            {feedbackMessage ? (
+              <Text
+                style={[
+                  styles.feedbackText,
+                  feedbackTone === 'error' && styles.feedbackTextError,
+                  feedbackTone === 'success' && styles.feedbackTextSuccess,
+                ]}
+              >
+                {feedbackMessage}
+              </Text>
+            ) : null}
 
             <View style={styles.footerRow}>
               <Text style={styles.footerText}>{footerText}</Text>
@@ -150,16 +169,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  primaryButtonDisabled: {
+    opacity: 0.6,
+  },
   primaryButtonText: {
     color: '#FFFFFF',
     fontSize: 20,
     lineHeight: 22,
     fontFamily: 'Poppins_700Bold',
   },
+  feedbackText: {
+    marginTop: 12,
+    color: '#64748B',
+    fontSize: 14,
+    lineHeight: 18,
+    fontFamily: 'Poppins_500Medium',
+    textAlign: 'center',
+  },
+  feedbackTextError: {
+    color: '#B42318',
+  },
+  feedbackTextSuccess: {
+    color: '#10B981',
+  },
   footerRow: {
+    marginTop: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 14,
     gap: 4,
   },
   footerText: {

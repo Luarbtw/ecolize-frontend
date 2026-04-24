@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import HomeBottomNav from '../components/home/HomeBottomNav'
+import ScreenState from '../components/common/ScreenState'
+import { useAuth } from '../context/AuthContext'
 import LoginScreen from '../screens/auth/LoginScreen'
 import RegisterScreen from '../screens/auth/RegisterScreen'
 import ChangePasswordScreen from '../screens/home/ChangePasswordScreen'
@@ -75,23 +77,40 @@ function MainHomeNavigator({ navigation }) {
 }
 
 export default function AppNavigator() {
+  const { isAuthenticated, isBootstrapping } = useAuth()
+
+  if (isBootstrapping) {
+    return <ScreenState title="Carregando sessão" description="Preparando seu ambiente." />
+  }
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Slide1" component={Slide1} />
-      <Stack.Screen name="Slide2" component={Slide2} />
-      <Stack.Screen name="Slide3" component={Slide3} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Home" component={MainHomeNavigator} />
-      <Stack.Screen name="WaterDetails" component={WaterDetailsScreen} />
-      <Stack.Screen name="EnergyDetails" component={EnergyDetailsScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
-      <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
-      <Stack.Screen name="EmailSettings" component={EmailSettingsScreen} />
-      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
-      <Stack.Screen name="Faq" component={FaqScreen} />
-      <Stack.Screen name="TermsOfUse" component={TermsOfUseScreen} />
-      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+    <Stack.Navigator
+      key={isAuthenticated ? 'private-stack' : 'public-stack'}
+      initialRouteName={isAuthenticated ? 'Home' : 'Slide1'}
+      screenOptions={{ headerShown: false }}
+    >
+      {!isAuthenticated ? (
+        <>
+          <Stack.Screen name="Slide1" component={Slide1} />
+          <Stack.Screen name="Slide2" component={Slide2} />
+          <Stack.Screen name="Slide3" component={Slide3} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Home" component={MainHomeNavigator} />
+          <Stack.Screen name="WaterDetails" component={WaterDetailsScreen} />
+          <Stack.Screen name="EnergyDetails" component={EnergyDetailsScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
+          <Stack.Screen name="EmailSettings" component={EmailSettingsScreen} />
+          <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+          <Stack.Screen name="Faq" component={FaqScreen} />
+          <Stack.Screen name="TermsOfUse" component={TermsOfUseScreen} />
+          <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+        </>
+      )}
     </Stack.Navigator>
   )
 }

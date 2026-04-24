@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 
+import ScreenState from '../../components/common/ScreenState'
 import ElevatedCard from '../../components/home/ElevatedCard'
 import HomeFeatureScreen from '../../components/home/HomeFeatureScreen'
 import ScreenHero from '../../components/home/ScreenHero'
+import useAsyncData from '../../hooks/useAsyncData'
+import { getGoals, GOAL_CONFIG, updateGoal } from '../../services/goalsService'
 
 const trendUpIcon = require('../../../assets/images/home/trendUp.png')
 const errorIcon = require('../../../assets/images/home/error.png')
@@ -11,39 +14,17 @@ const waterIcon = require('../../../assets/images/home/water.png')
 const energyIcon = require('../../../assets/images/home/energy.png')
 const chevronRightIcon = require('../../../assets/images/home/chevronRight.png')
 
-const INITIAL_GOALS = {
-  water: 15000,
-  energy: 250,
-}
-
-const GOAL_CONFIG = {
+const GOAL_UI_CONFIG = {
   water: {
-    title: 'Água',
-    subtitle: 'Limite em litros (L).',
     icon: waterIcon,
     iconTint: '#DDF0FB',
     pillBackground: '#E5F3FB',
-    valueStep: 500,
-    minValue: 5000,
-    currencyPerUnit: 67.7 / 15000,
   },
   energy: {
-    title: 'Energia',
-    subtitle: 'Limite em kWh.',
     icon: energyIcon,
     iconTint: '#FFF3CC',
     pillBackground: '#FFF6CF',
-    valueStep: 10,
-    minValue: 100,
-    currencyPerUnit: 0.88,
   },
-}
-
-function formatCurrency(value) {
-  return value.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  })
 }
 
 function GoalStepperCard({ title, subtitle, icon, iconTint, pillBackground, value, cost, onChange }) {
@@ -93,26 +74,16 @@ function GoalStepperCard({ title, subtitle, icon, iconTint, pillBackground, valu
 }
 
 export default function GoalsScreen({ navigation }) {
-  const [goals, setGoals] = useState(INITIAL_GOALS)
-
+  const { data, loading, error, reload, setData } = useAsyncData(getGoals, [])
+  const goals = useMemo(() => data?.values || { water: 0, energy: 0 }, [data])
   const costs = useMemo(
-    () => ({
-      water: formatCurrency(goals.water * GOAL_CONFIG.water.currencyPerUnit),
-      energy: formatCurrency(goals.energy * GOAL_CONFIG.energy.currencyPerUnit),
-    }),
-    [goals]
+    () => data?.costs || { water: 'R$ 0,00', energy: 'R$ 0,00' },
+    [data]
   )
 
-  function handleGoalChange(resourceKey, direction) {
-    const config = GOAL_CONFIG[resourceKey]
-
-    setGoals((current) => ({
-      ...current,
-      [resourceKey]: Math.max(
-        config.minValue,
-        current[resourceKey] + config.valueStep * direction
-      ),
-    }))
+  async function handleGoalChange(resourceKey, direction) {
+    const nextData = await updateGoal(resourceKey, direction)
+    setData(nextData)
   }
 
   return (
@@ -145,12 +116,26 @@ export default function GoalsScreen({ navigation }) {
         </View>
       </View>
 
+      {loading ? (
+        <ScreenState compact title="Carregando metas" description="Buscando seus limites atuais." />
+      ) : null}
+
+      {error ? (
+        <ScreenState
+          compact
+          title="Não foi possível carregar as metas"
+          description="Tente novamente em instantes."
+          actionLabel="Recarregar"
+          onActionPress={reload}
+        />
+      ) : null}
+
       <GoalStepperCard
         title={GOAL_CONFIG.water.title}
         subtitle={GOAL_CONFIG.water.subtitle}
-        icon={GOAL_CONFIG.water.icon}
-        iconTint={GOAL_CONFIG.water.iconTint}
-        pillBackground={GOAL_CONFIG.water.pillBackground}
+        icon={GOAL_UI_CONFIG.water.icon}
+        iconTint={GOAL_UI_CONFIG.water.iconTint}
+        pillBackground={GOAL_UI_CONFIG.water.pillBackground}
         value={goals.water}
         cost={costs.water}
         onChange={(direction) => handleGoalChange('water', direction)}
@@ -159,9 +144,9 @@ export default function GoalsScreen({ navigation }) {
       <GoalStepperCard
         title={GOAL_CONFIG.energy.title}
         subtitle={GOAL_CONFIG.energy.subtitle}
-        icon={GOAL_CONFIG.energy.icon}
-        iconTint={GOAL_CONFIG.energy.iconTint}
-        pillBackground={GOAL_CONFIG.energy.pillBackground}
+        icon={GOAL_UI_CONFIG.energy.icon}
+        iconTint={GOAL_UI_CONFIG.energy.iconTint}
+        pillBackground={GOAL_UI_CONFIG.energy.pillBackground}
         value={goals.energy}
         cost={costs.energy}
         onChange={(direction) => handleGoalChange('energy', direction)}
