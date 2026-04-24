@@ -5,11 +5,18 @@ import { StyleSheet, View } from 'react-native'
 import HomeBottomNav from '../components/home/HomeBottomNav'
 import LoginScreen from '../screens/auth/LoginScreen'
 import RegisterScreen from '../screens/auth/RegisterScreen'
+import ChangePasswordScreen from '../screens/home/ChangePasswordScreen'
 import EnergyDetailsScreen from '../screens/home/EnergyDetailsScreen'
+import EmailSettingsScreen from '../screens/home/EmailSettingsScreen'
+import FaqScreen from '../screens/home/FaqScreen'
 import GoalsScreen from '../screens/home/GoalsScreen'
 import HomeScreen from '../screens/home/HomeScreen'
+import PersonalInfoScreen from '../screens/home/PersonalInfoScreen'
+import PrivacyPolicyScreen from '../screens/home/PrivacyPolicyScreen'
 import ProfileScreen from '../screens/home/ProfileScreen'
 import RankingScreen from '../screens/home/RankingScreen'
+import SettingsScreen from '../screens/home/SettingsScreen'
+import TermsOfUseScreen from '../screens/home/TermsOfUseScreen'
 import WaterDetailsScreen from '../screens/home/WaterDetailsScreen'
 import Slide1 from '../screens/onboarding/Slide1'
 import Slide2 from '../screens/onboarding/Slide2'
@@ -78,6 +85,13 @@ export default function AppNavigator() {
       <Stack.Screen name="Home" component={MainHomeNavigator} />
       <Stack.Screen name="WaterDetails" component={WaterDetailsScreen} />
       <Stack.Screen name="EnergyDetails" component={EnergyDetailsScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
+      <Stack.Screen name="EmailSettings" component={EmailSettingsScreen} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+      <Stack.Screen name="Faq" component={FaqScreen} />
+      <Stack.Screen name="TermsOfUse" component={TermsOfUseScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
     </Stack.Navigator>
   )
 }

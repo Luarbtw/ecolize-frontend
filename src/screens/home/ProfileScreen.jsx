@@ -105,7 +105,7 @@ export default function ProfileScreen({ navigation }) {
 
               <Text style={styles.headerTitle}>Perfil</Text>
 
-              <Pressable style={styles.headerButton}>
+              <Pressable style={styles.headerButton} onPress={() => navigation.navigate('Settings')}>
                 <Image source={settingsIcon} style={styles.settingsIcon} resizeMode="contain" />
               </Pressable>
             </View>

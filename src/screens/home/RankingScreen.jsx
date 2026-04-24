@@ -89,12 +89,12 @@ function FilterChip({ item, active, onPress }) {
 function RankBadge({ place }) {
   const palette =
     place === 1
-      ? { stroke: '#FBBF24', fill: '#FFF6DB', text: '#F59E0B' }
+      ? { stroke: '#FBBF24', fill: '#FFF6DB', text: '#F59E0B', ribbonLeft: '#1D4ED8', ribbonRight: '#2563EB' }
       : place === 2
-        ? { stroke: '#C98012', fill: '#FDE7C7', text: '#C98012' }
+        ? { stroke: '#B8C2CC', fill: '#F4F7FA', text: '#64748B', ribbonLeft: '#475569', ribbonRight: '#64748B' }
         : place === 3
-          ? { stroke: '#BEB7AF', fill: '#F2EFEB', text: '#BEB7AF' }
-          : { stroke: '#64748B', fill: '#F2F5F9', text: '#64748B' }
+          ? { stroke: '#C98012', fill: '#FDE7C7', text: '#C98012', ribbonLeft: '#0F766E', ribbonRight: '#14B8A6' }
+          : { stroke: '#64748B', fill: '#F2F5F9', text: '#64748B', ribbonLeft: '#64748B', ribbonRight: '#64748B' }
 
   if (place > 3) {
     return (
@@ -106,10 +106,16 @@ function RankBadge({ place }) {
 
   return (
     <View style={styles.rankBadgeWrap}>
-      <View style={[styles.rankBadgeCircle, { borderColor: palette.stroke, backgroundColor: palette.fill }]}>
-        <Text style={[styles.rankBadgeText, { color: palette.text }]}>{place}</Text>
+      <View style={styles.rankMedalTop}>
+        <View style={[styles.rankMedalRibbon, { backgroundColor: palette.ribbonLeft, transform: [{ rotate: '-8deg' }] }]} />
+        <View style={[styles.rankMedalRibbon, { backgroundColor: palette.ribbonRight, transform: [{ rotate: '8deg' }] }]} />
       </View>
-      <View style={[styles.rankRibbon, { backgroundColor: palette.stroke }]} />
+
+      <View style={[styles.rankBadgeCircle, { borderColor: palette.stroke, backgroundColor: palette.fill }]}>
+        <View style={[styles.rankBadgeInnerCircle, { borderColor: palette.stroke }]}>
+          <Text style={[styles.rankBadgeText, { color: palette.text }]}>{place}</Text>
+        </View>
+      </View>
     </View>
   )
 }
@@ -281,11 +287,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  rankMedalTop: {
+    width: 34,
+    height: 14,
+    marginBottom: -3,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 4,
+    zIndex: 1,
+  },
+  rankMedalRibbon: {
+    width: 10,
+    height: 16,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+  },
   rankBadgeCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     borderWidth: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rankBadgeInnerCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -293,13 +322,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
     fontFamily: 'Poppins_700Bold',
-  },
-  rankRibbon: {
-    marginTop: -2,
-    width: 20,
-    height: 14,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
   },
   rankNumberWrap: {
     width: 58,

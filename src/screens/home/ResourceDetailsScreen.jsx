@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
   historyChevron: {
     width: 16,
     height: 16,
+    transform: [{ scaleX: -1 }],
   },
   chartCard: {
     marginTop: 34,
